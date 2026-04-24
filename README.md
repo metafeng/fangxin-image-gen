@@ -1,6 +1,6 @@
 # fangxin-image-gen-skill
 
-一个面向 Codex / Claude Skills 的中文图片生成 Skill，基于 `fangxinapi.com` 的图片接口封装，统一支持：
+一个面向 Codex / Claude Skills 的中文图片生成 Skill，基于放心API `fangxinapi.com` 的图片接口封装，统一支持：
 
 - 文生图
 - 以图生图
@@ -88,7 +88,7 @@ fangxin-image-gen/
 
 ## API Key 从哪里获取
 
-按当前这套接入方式，你需要在 **放心 API / Fangxin API** 后台获取自己的 key。
+按当前这套接入方式，你需要在 **放心API** 后台获取自己的 key。
 
 官网：
 
@@ -96,7 +96,7 @@ fangxin-image-gen/
 
 使用时建议按当前实测方式确认这几项：
 
-1. 在 Fangxin API 网站后台创建你自己的 API Key
+1. 在 放心API 网站后台创建你自己的 API Key
 2. 使用或选择 `AZ` 分组
 3. 确认可调用的图片模型是 `gpt-image-2`
 
@@ -108,7 +108,7 @@ fangxin-image-gen/
 说明：
 
 - 这里写的是当前这套 Skill 的实测接入方式
-- 如果 Fangxin 后台以后改了分组名、模型可用性或价格策略，需要以后台实际情况为准
+- 如果放心API后台以后改了分组名、模型可用性或价格策略，需要以后台实际情况为准
 
 ## 支持的尺寸
 
@@ -121,56 +121,63 @@ fangxin-image-gen/
 - `2160x3840`：4K 竖版
 - `auto`：由模型自动决定
 
-## 基本用法
+## 使用案例
 
 ### 1. 文生图
 
-```bash
-python3 ~/.claude/skills/fangxin-image-gen/scripts/generate.py \
-  --prompt "一张极简风格的红色纸飞机海报，奶油色背景" \
-  --size 1024x1024 \
-  --quality medium \
-  --output-format png
-```
+如果你只是想直接出一张图，不需要上传任何参考图片，只要告诉它你想画什么就可以。
 
-### 2. 本地图片编辑
+例如，你可以直接用自然语言描述：
 
-```bash
-python3 ~/.claude/skills/fangxin-image-gen/scripts/generate.py \
-  --prompt "把这张图改成更干净的商业海报风格" \
-  --image /path/to/source.png \
-  --size 1536x1024 \
-  --quality high \
-  --output-format png
-```
+- 画一张极简风格的红色纸飞机海报，背景是奶油色
+- 做一张科技感很强的产品发布会主视觉
+- 生成一张适合文章封面的插画
 
-### 3. 两张图合成合影
+这类请求会自动走文生图接口。
 
-```bash
-python3 ~/.claude/skills/fangxin-image-gen/scripts/generate.py \
-  --prompt "把两张图中的人物合成一张自然真实的双人合影，两个人都必须清晰出现，并排站立，看向镜头" \
-  --image /path/to/person-a.png \
-  --image /path/to/person-b.png \
-  --size 1024x1024 \
-  --quality medium \
-  --output-format png
-```
+### 2. 单图编辑
+
+如果你已经有一张图片，想在原图基础上修改风格、重绘细节、提升质感，直接把这张图作为参考图传进去即可。
+
+例如：
+
+- 把这张图改成更干净的商业海报风格
+- 保持人物不变，把背景换成摄影棚
+- 保留原构图，整体改成高级时尚杂志风格
+
+这类请求会自动走图片编辑接口。
+
+### 3. 多图合成 / 合影合成
+
+如果你有两张或多张参考图，希望把它们合成到一张图里，也可以直接用自然语言描述目标结果。
+
+例如：
+
+- 把两张图中的人物合成一张自然真实的双人合影
+- 把第一个人的脸和第二张图的场景融合在一起
+- 参考多张产品图，生成一张新的品牌主视觉
+
+已经实测通过的场景包括：
+
+- 双人合影合成
+- 多图参考融合
+- 一张主图加多张风格参考图
 
 ### 4. 直接传图片 URL
 
-```bash
-python3 ~/.claude/skills/fangxin-image-gen/scripts/generate.py \
-  --prompt "把两张图中的人物合成一张自然真实的双人合影" \
-  --image "https://example.com/a.png" \
-  --image "https://example.com/b.png" \
-  --size 1024x1024 \
-  --quality medium \
-  --output-format png
-```
+如果你不想把图片长期保存在服务器本地，可以直接给图片 URL。
+
+例如：
+
+- 用这个链接里的图片重新生成一版海报
+- 把这两个 URL 对应的人物合成一张合影
+- 参考这个 OSS 链接里的图片做风格迁移
+
+对调用方来说，使用体验仍然是“直接传 URL”；Skill 内部会自动下载临时文件、请求完成后再删除。
 
 ## URL 输入的处理逻辑
 
-Fangxin 的编辑接口对“直接远程 URL 作为编辑输入”兼容性不稳定，所以这个 Skill 做了一层兼容：
+放心API的编辑接口对“直接远程 URL 作为编辑输入”兼容性不稳定，所以这个 Skill 做了一层兼容：
 
 - 如果传的是本地文件：直接上传
 - 如果传的是图片 URL：先下载到 `/tmp` 临时文件
@@ -248,5 +255,5 @@ https://github.com/metafeng/fangxin-image-gen-skill/tree/main/fangxin-image-gen
 
 - 这个 Skill 不自带默认 API key
 - 没有配置 `FANGXIN_API_KEY` 时会直接报错
-- Fangxin 上游偶尔会出现 TLS 中断或超时，脚本里已经做了基础重试
-- 某些尺寸或模型策略如果后续在 Fangxin 后台变化，需要按实际可用情况调整
+- 放心API上游偶尔会出现 TLS 中断或超时，脚本里已经做了基础重试
+- 某些尺寸或模型策略如果后续在放心API后台变化，需要按实际可用情况调整
