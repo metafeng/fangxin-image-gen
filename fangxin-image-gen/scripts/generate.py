@@ -15,6 +15,36 @@ GENERATIONS_API_URL = "https://fangxinapi.com/v1/images/generations"
 EDITS_API_URL = "https://fangxinapi.com/v1/images/edits"
 DEFAULT_MODEL = "gpt-image-2"
 REQUEST_TIMEOUT_SECONDS = 420
+DOTENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+
+
+def _load_dotenv():
+    """Load KEY=VALUE pairs from <skill>/.env into os.environ if not already set.
+
+    Shell-exported values always win; .env only fills in what's missing so users
+    can keep a per-skill config file without polluting their global shell.
+    """
+    if not DOTENV_PATH.is_file():
+        return
+    try:
+        for raw_line in DOTENV_PATH.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if line.startswith("export "):
+                line = line[len("export "):].lstrip()
+            if "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = value
+    except OSError:
+        pass
+
+
+_load_dotenv()
 
 
 def main():
@@ -45,8 +75,14 @@ def main():
 
     api_key = os.environ.get("FANGXIN_API_KEY", "").strip()
     if not api_key:
-        print("Error: FANGXIN_API_KEY environment variable is not set.", file=sys.stderr)
-        print("Run: /update-config set FANGXIN_API_KEY=<your-key>", file=sys.stderr)
+        print("Error: FANGXIN_API_KEY is not set.", file=sys.stderr)
+        print(
+            "Get a key at https://fangxinapi.com, then save it to:",
+            file=sys.stderr,
+        )
+        print(f"  {DOTENV_PATH}", file=sys.stderr)
+        print("as a single line:", file=sys.stderr)
+        print("  FANGXIN_API_KEY=sk-xxxxxxxx", file=sys.stderr)
         sys.exit(1)
 
     model = args.model or os.environ.get("FANGXIN_MODEL", DEFAULT_MODEL)
