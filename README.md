@@ -1,4 +1,4 @@
-# fangxin-image-gen-skill
+# fangxin-image-gen
 
 一个面向 Claude Skills / Codex 的中文图片生成 Skill，基于 [放心 API](https://fangxinapi.com) 的 `gpt-image-2` 接口封装。一句话：**让 AI 帮你画图、改图、合图，配置 5 分钟搞定。**
 
@@ -16,7 +16,7 @@
 仓库根目录就是 Skill 本身，clone 下来直接放进 Claude skills 目录就能用：
 
 ```text
-fangxin-image-gen-skill/    # 仓库根 = Skill 本体
+fangxin-image-gen/          # 仓库根 = Skill 本体
 ├── README.md               # 你正在看的这个（GitHub 文档）
 ├── SKILL.md                # 给 AI 看的说明书（Skill 入口）
 ├── agents/openai.yaml      # Agent 元信息
@@ -60,7 +60,7 @@ FANGXIN_API_KEY=sk-xxxxxxxx
 **方式 A：直接 clone 到 Skills 目录（推荐，更新一行命令）**
 
 ```bash
-git clone https://github.com/metafeng/fangxin-image-gen-skill.git \
+git clone https://github.com/metafeng/fangxin-image-gen.git \
   ~/.claude/skills/fangxin-image-gen
 ```
 
@@ -174,4 +174,4 @@ python3 ~/.claude/skills/fangxin-image-gen/scripts/generate.py \
 
 ## 反馈
 
-发现 bug 或者想加新能力，欢迎在 [Issues](https://github.com/metafeng/fangxin-image-gen-skill/issues) 里提。
+发现 bug 或者想加新能力，欢迎在 [Issues](https://github.com/metafeng/fangxin-image-gen/issues) 里提。
