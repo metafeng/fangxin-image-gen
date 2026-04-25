@@ -2,7 +2,7 @@
 
 一个面向 Claude Skills / Codex 的中文图片生成 Skill，基于 [放心 API](https://fangxinapi.com) 的 `gpt-image-2` 接口封装。一句话：**让 AI 帮你画图、改图、合图，配置 5 分钟搞定。**
 
-当前版本：**v1.3.0**
+当前版本：**v1.4.0**
 
 支持的玩法：
 
@@ -13,14 +13,16 @@
 
 ## 仓库长什么样
 
+仓库根目录就是 Skill 本身，clone 下来直接放进 Claude skills 目录就能用：
+
 ```text
-fangxin-image-gen-skill/
-├── README.md                # 你正在看的这个
-├── fangxin-image-gen.zip    # 打包好的版本，可以直接发给别人
-└── fangxin-image-gen/       # Skill 本体
-    ├── SKILL.md             # 给 AI 看的说明书
-    ├── agents/openai.yaml
-    └── scripts/generate.py  # 实际干活的脚本
+fangxin-image-gen-skill/    # 仓库根 = Skill 本体
+├── README.md               # 你正在看的这个（GitHub 文档）
+├── SKILL.md                # 给 AI 看的说明书（Skill 入口）
+├── agents/openai.yaml      # Agent 元信息
+├── scripts/generate.py     # 实际干活的脚本
+├── fangxin-image-gen.zip   # 打包好的版本，方便离线分发
+└── .gitignore              # 已忽略 .env / .DS_Store / __pycache__
 ```
 
 ## 三步用起来
@@ -53,21 +55,24 @@ FANGXIN_API_KEY=sk-xxxxxxxx
 
 ### 第 3 步：装 Skill
 
-把 `fangxin-image-gen/` 这个目录放到你 Skill 的安装位置即可。两种常见方式：
+仓库扁平化之后安装很简单，二选一：
 
-**方式 A：直接 clone 到 Skills 目录**
+**方式 A：直接 clone 到 Skills 目录（推荐，更新一行命令）**
 
 ```bash
-git clone https://github.com/metafeng/fangxin-image-gen-skill.git ~/tmp-fxig
-cp -R ~/tmp-fxig/fangxin-image-gen ~/.claude/skills/
-rm -rf ~/tmp-fxig
+git clone https://github.com/metafeng/fangxin-image-gen-skill.git \
+  ~/.claude/skills/fangxin-image-gen
 ```
+
+以后想更新只要 `cd ~/.claude/skills/fangxin-image-gen && git pull` 即可。
 
 **方式 B：解压打包好的 zip**
 
-下载 `fangxin-image-gen.zip`，解压后把 `fangxin-image-gen/` 拷到你的 Skills 目录。
+下载 `fangxin-image-gen.zip`，解压后会得到一个 `fangxin-image-gen/` 文件夹，把它整个拷到 `~/.claude/skills/` 下面。
 
 装好后重启一下 Claude / Codex，让它读到新 Skill。
+
+> Claude 加载 Skill 时只看 `SKILL.md` + `agents/` + `scripts/`，仓库根的 `README.md` / `.git/` / `.gitignore` 会被自动忽略，不影响运行。
 
 ## 怎么用
 
